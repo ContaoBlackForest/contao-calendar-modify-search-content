@@ -70,10 +70,6 @@ class ModifySearchContent implements EventSubscriberInterface
             return;
         }
 
-        /*if (!\Input::get('auto_item')) {
-            return;
-        }*/
-
         $alias = \Input::get('auto_item');
 
         $model = \CalendarEventsModel::findByIdOrAlias($alias);
@@ -83,8 +79,11 @@ class ModifySearchContent implements EventSubscriberInterface
 
         global $objPage;
 
-        //TODO test url by multi domains
-        $event->setUrl(\Controller::generateFrontendUrl($objPage->row(), '/' . $model->alias, \Config::get('addLanguageToUrl'), $objPage->domain));
+        $strUrl = \Environment::get('base') . TL_PATH;
+        $strUrl .= \Controller::generateFrontendUrl($objPage->row(), '/' . $model->alias, $objPage->language, true);
+
+
+        $event->setUrl($strUrl);
         $event->setTemplate('search_content_calendar');
         $event->setData($model);
     }
